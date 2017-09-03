@@ -60,7 +60,8 @@ exports.routesMerger = (options) => {
     for (const [dir, program] of options.routes)
         (['routes', 'route', 'admin'].some(r => dir.indexOf(r) > -1) && Object
             .keys(program)
-            .forEach((route) => typeof program[route] === 'function' && program[route](options.app, `${options.root}/${path_1.dirname(dir)}`))
+            .forEach((route) => typeof program[route] === 'function'
+            && program[route](options.app, `${options.root}/${path_1.dirname(dir)}`))
             && routes.add(dir));
     options.logger.info(`${options.server_type} registered routes:\t`, Array.from(routes), ';');
     if (options.server_type === 'restify')
