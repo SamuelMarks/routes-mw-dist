@@ -58,11 +58,13 @@ exports.routesMerger = (options) => {
         throw Error(`NotImplemented: ${options.server_type}; TODO`);
     const routes = new Set();
     for (const [dir, program] of options.routes)
-        (['routes', 'route', 'admin'].some(r => dir.indexOf(r) > -1) && Object
-            .keys(program)
-            .forEach((route) => typeof program[route] === 'function'
-            && program[route](options.app, `${options.root}/${path_1.dirname(dir)}`))
-            && routes.add(dir));
+        if (['routes', 'route', 'admin'].some(r => dir.indexOf(r) > -1)) {
+            Object
+                .keys(program)
+                .forEach((route) => typeof program[route] === 'function'
+                && program[route](options.app, `${options.root}/${path_1.dirname(dir)}`));
+            routes.add(dir);
+        }
     options.logger.info(`${options.server_type} registered routes:\t`, Array.from(routes), ';');
     if (options.server_type === 'restify')
         return restifyStartApp(options.skip_start_app, options.app, options.listen_port, options.onServerStart, options.logger, options.callback);
