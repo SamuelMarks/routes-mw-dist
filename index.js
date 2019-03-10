@@ -6,7 +6,7 @@ const path_1 = require("path");
 const restifyInitApp = (app, with_app, skip_app_logging, skip_app_version_routes, skip_use, package_, version_routes_kwargs) => {
     if (with_app != null)
         app = with_app(app);
-    if (!skip_use) {
+    if (typeof skip_use !== 'boolean' || !skip_use) {
         app.use(restify.plugins.queryParser());
         app.use(restify.plugins.bodyParser());
     }
