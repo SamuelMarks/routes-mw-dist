@@ -3,11 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Logger = require("bunyan");
 const restify = require("restify");
 const path_1 = require("path");
-const restifyInitApp = (app, with_app, skip_app_logging, skip_app_version_routes, package_, version_routes_kwargs) => {
+const restifyInitApp = (app, with_app, skip_app_logging, skip_app_version_routes, skip_use, package_, version_routes_kwargs) => {
     if (with_app != null)
         app = with_app(app);
-    app.use(restify.plugins.queryParser());
-    app.use(restify.plugins.bodyParser());
+    if (!skip_use) {
+        app.use(restify.plugins.queryParser());
+        app.use(restify.plugins.bodyParser());
+    }
     if (!skip_app_logging) {
         const event = 'after';
         app.on(event, restify.plugins.auditLogger({
@@ -54,7 +56,7 @@ exports.routesMerger = (options) => {
     }
     else if (options.server_type === 'restify') {
         options.app = restifyInitApp(options.app == null ? restify.createServer(Object.assign({ name: options.app_name }, options.createServerArgs || {}))
-            : options.app, options.with_app, options.skip_app_logging, options.skip_app_version_routes, options.package_, options.version_routes_kwargs);
+            : options.app, options.with_app, options.skip_app_logging, options.skip_app_version_routes, options.skip_use, options.package_, options.version_routes_kwargs);
     }
     else
         throw Error(`NotImplemented: ${options.server_type}; TODO`);
